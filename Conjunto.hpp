@@ -140,7 +140,7 @@ void Conjunto<Elem>::remover(const Elem& clave) {
 		if (pertenece(clave)){
 				if (raiz_->valor != clave) {
 					Nodo* padre = raiz_;
-					while (not (padre->der != NULL && padre->der->valor == clave) || (padre-izq != NULL && padre-izq->valor == clave)) {
+					while (not (padre->der != NULL && padre->der->valor == clave) || (padre->izq != NULL && padre->izq->valor == clave)) {
 						if (padre->valor < clave)
 							padre = padre->izq;
 						else
@@ -163,7 +163,7 @@ void Conjunto<Elem>::remover(const Elem& clave) {
 							delete sucesor;
 						}
 					}
-				} else
+				} else {}
 			}
 }
 
