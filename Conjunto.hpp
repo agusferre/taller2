@@ -73,6 +73,7 @@ class Conjunto
 		// Puntero a la raíz de nuestro árbol.
     // Pueden completarlo con más variables
 		Nodo* raiz_;
+		unsigned int cardinal_;
 };
 
 template <class Elem>
@@ -88,7 +89,8 @@ unsigned int Conjunto<Elem>::Nodo::cantElems(){
 }
 
 template <class Elem>
-Conjunto<Elem>::Conjunto() : raiz_(NULL) {}
+Conjunto<Elem>::Conjunto() : raiz_(NULL) { 
+cardinal_ = 0;}
 
 template <class Elem>
 Conjunto<Elem>::~Conjunto() {
@@ -111,9 +113,11 @@ bool Conjunto<Elem>::pertenece(const Elem& clave) const {
 
 template <class Elem>
 void Conjunto<Elem>::agregar(const Elem& clave) {
-    Nodo* nuevo = new Nodo(clave);
+   
+    if (!pertenece(clave)){
+     Nodo* nuevo = new Nodo(clave);
+    
     Nodo* kaka = raiz_;
-    if (pertenece(clave)) delete nuevo;
     if (raiz_ == NULL) raiz_ = nuevo;
     while (not pertenece(clave)) {
         if (kaka->valor < clave) {
@@ -123,49 +127,97 @@ void Conjunto<Elem>::agregar(const Elem& clave) {
             if (kaka->izq == NULL) kaka->izq = nuevo;
             else kaka = kaka->izq;
         }
+            
     }
+    cardinal_++;
+}
 }
 
 template <class Elem>
 unsigned int Conjunto<Elem>::cardinal() const {
-    unsigned int res = 0;
-    if (raiz_ != NULL){
-        res += 1 + raiz_->der->cantElems() + raiz_->izq->cantElems();
-    }
-    return res;
+    //unsigned int res = 0;
+    //if (raiz_ != NULL){
+     //   res += 1 + raiz_->der->cantElems() + raiz_->izq->cantElems();
+    //}
+    //return res;
+	return cardinal_;
 }
 
 template <class Elem>
 void Conjunto<Elem>::remover(const Elem& clave) {
-		if (pertenece(clave)){
+		 if (pertenece(clave)){
+			Nodo* padre;
+			Nodo* rm;
 				if (raiz_->valor != clave) {
-					Nodo* padre = raiz_;
-					while (not (padre->der != NULL && padre->der->valor == clave) || (padre->izq != NULL && padre->izq->valor == clave)) {
+					//Nodo* padre = raiz_;
+					padre = raiz_;
+					// BUSCO EL VALOR A BORRAR
+					while (not (padre->der != NULL && padre->der->valor == clave) || 
+						(padre->izq != NULL && padre->izq->valor == clave)) {
 						if (padre->valor < clave)
 							padre = padre->izq;
 						else
 				  		padre = padre->der;
 			  	}
+			  		// SI EL NODO RM TIENE 1 o 0 HIJO
 					if (padre->der->valor == clave){
-						Nodo* rm = padre->der;
+						rm = padre->der;
 						if (rm->der == NULL){
 							padre->der = rm->izq;
 						} else if (rm->izq == NULL) {
 							padre->der = rm->der;
-						} else {
-							Nodo* padre_sucesor = rm;
-							if (rm->der->izq != NULL) padre_sucesor = rm->der;
-							while (padre_sucesor->izq->izq != NULL)
+						}
+						delete rm;
+
+					} else {
+
+						rm = padre->izq;
+						if (rm->der == NULL){
+							padre->izq = rm->izq;
+
+						} else if (rm ->izq == NULL)
+						padre->izq = rm->der;
+
+						delete rm;
+					}
+
+
+				} else {
+					rm = raiz_;
+						if (rm->der == NULL){
+							raiz_ = rm->izq;
+
+						} else if (rm ->izq == NULL)
+						raiz_ = rm->der;
+
+						delete rm;
+
+				} 
+				// EL NODO RM TIENE DOS HIJOS (RM PUEDE SER LA RAIZ)
+
+				if (rm->der != NULL && rm->izq != NULL){
+						Nodo* padre_sucesor;
+						Nodo* sucesor;
+							if (rm->der->izq != NULL) {
+							padre_sucesor = rm->der;
+								while (padre_sucesor->izq->izq != NULL)
 								padre_sucesor = padre_sucesor->izq;
-							Nodo* sucesor = padre_sucesor->izq;
-							rm->valor = sucesor->valor;
+							sucesor = padre_sucesor->izq;
 							padre_sucesor->izq = sucesor->der;
+							} else {
+							padre_sucesor = rm;
+							sucesor = padre_sucesor->der;
+							rm->valor = sucesor->valor;
+							padre_sucesor->der = sucesor->der;
+						}
+							
 							delete sucesor;
 						}
+						cardinal_--;
 					}
-				} else {}
-			}
-}
+
+
+		}
 
 template <class Elem>
 const Elem&  Conjunto<Elem>::minimo() const {
