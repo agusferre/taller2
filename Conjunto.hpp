@@ -44,15 +44,21 @@ class Conjunto
 		void to_string(std::ostream&) const;
 
     std::string show() const {
-      std::ostringstream os;
-      os << *this;
-      return os.str();
+    std::ostringstream os;
+   	os << "{ ";
+   	// complete
+   	os << "}" << std::endl;
+    
+
+    //  os << *this;
+      return os.str();	
+
     }
 
-		friend ostream& operator<<(ostream& os, const Conjunto<Elem> &c) {
-			c.to_string(os);
-			return os;
-		}
+friend ostream& operator<<(ostream& os, const Conjunto<Elem> &c) {
+	c.to_string(os);
+	return os;
+}
 
 	private:
 
@@ -67,13 +73,18 @@ class Conjunto
 			// Puntero a la raíz del subárbol der.
 			Nodo* der;
 
+
             unsigned int cantElems();
+
+
         };
 
 		// Puntero a la raíz de nuestro árbol.
     // Pueden completarlo con más variables
 		Nodo* raiz_;
 		unsigned int cardinal_;
+
+
 };
 
 template <class Elem>
@@ -94,9 +105,9 @@ cardinal_ = 0;}
 
 template <class Elem>
 Conjunto<Elem>::~Conjunto() {
-	/*while(raiz_ != NULL){
+	while(raiz_ != NULL){
 		remover(maximo());
-	}*/
+	}
 }
 
 template <class Elem>
@@ -121,11 +132,17 @@ void Conjunto<Elem>::agregar(const Elem& clave) {
     if (raiz_ == NULL) raiz_ = nuevo;
     while (not pertenece(clave)) {
         if (kaka->valor < clave) {
-            if (kaka->der == NULL) kaka->der = nuevo;
-            else kaka = kaka->der;
+            if (kaka->der == NULL){
+            	kaka->der = nuevo;
+
+         } else 
+            	kaka = kaka->der;
         } else {
-            if (kaka->izq == NULL) kaka->izq = nuevo;
-            else kaka = kaka->izq;
+            if (kaka->izq == NULL){
+            	kaka->izq = nuevo;
+
+            }
+           else kaka = kaka->izq;
         }
             
     }
@@ -145,79 +162,165 @@ unsigned int Conjunto<Elem>::cardinal() const {
 
 template <class Elem>
 void Conjunto<Elem>::remover(const Elem& clave) {
-		 if (pertenece(clave)){
-			Nodo* padre;
-			Nodo* rm;
-				if (raiz_->valor != clave) {
-					//Nodo* padre = raiz_;
-					padre = raiz_;
-					// BUSCO EL VALOR A BORRAR
-					while (not (padre->der != NULL && padre->der->valor == clave) || 
-						(padre->izq != NULL && padre->izq->valor == clave)) {
-						if (padre->valor < clave)
-							padre = padre->izq;
-						else
-				  		padre = padre->der;
-			  	}
-			  		// SI EL NODO RM TIENE 1 o 0 HIJO
-					if (padre->der->valor == clave){
-						rm = padre->der;
-						if (rm->der == NULL){
-							padre->der = rm->izq;
-						} else if (rm->izq == NULL) {
-							padre->der = rm->der;
-						}
-						delete rm;
-
-					} else {
-
-						rm = padre->izq;
-						if (rm->der == NULL){
-							padre->izq = rm->izq;
-
-						} else if (rm ->izq == NULL)
-						padre->izq = rm->der;
-
-						delete rm;
-					}
+		 // if (pertenece(clave)){
+			// Nodo* padre;
+			// Nodo* rm;
+			// 	if (raiz_->valor != clave) {
+			// 		//Nodo* padre = raiz_;
+			// 		padre = raiz_;
+			// 		// BUSCO EL VALOR A BORRAR
+			// 		while (not (padre->der != NULL && padre->der->valor == clave) || 
+			// 			(padre->izq != NULL && padre->izq->valor == clave)) {
+			// 			if (padre->valor < clave)
+			// 				padre = padre->izq;
+			// 			else
+			// 	  		padre = padre->der;
+			//   	}
+			//   		// SI EL NODO RM TIENE 1 o 0 HIJOS
+			//   		if (padre->der->valor == clave)
+			//   			rm = padre->der;
+			//   		else
+			//   			rm = padre->izq;
 
 
-				} else {
-					rm = raiz_;
-						if (rm->der == NULL){
-							raiz_ = rm->izq;
+			// 		if (rm->der == NULL && rm->izq != NULL){
+			// 			if 	(padre->der == rm)
+			// 				padre->der = rm->izq;
+			// 			else 	
+			// 				padre->izq = rm->izq;
+			// 			rm->izq = NULL;
+		
+			// 			delete rm;
+			// 		} else if (rm->izq == NULL && rm->der != NULL) {
+ 		// 				if (padre->der == rm)
+			// 				padre->der = rm->der;
+			// 			else 	
+			// 				padre->izq = rm->der; 							
+			// 			rm->der = NULL;
 
-						} else if (rm ->izq == NULL)
-						raiz_ = rm->der;
+			// 			delete rm;
 
-						delete rm;
-
-				} 
-				// EL NODO RM TIENE DOS HIJOS (RM PUEDE SER LA RAIZ)
-
-				if (rm->der != NULL && rm->izq != NULL){
-						Nodo* padre_sucesor;
-						Nodo* sucesor;
-							if (rm->der->izq != NULL) {
-							padre_sucesor = rm->der;
-								while (padre_sucesor->izq->izq != NULL)
-								padre_sucesor = padre_sucesor->izq;
-							sucesor = padre_sucesor->izq;
-							padre_sucesor->izq = sucesor->der;
-							} else {
-							padre_sucesor = rm;
-							sucesor = padre_sucesor->der;
-							rm->valor = sucesor->valor;
-							padre_sucesor->der = sucesor->der;
-						}
-							
-							delete sucesor;
-						}
-						cardinal_--;
-					}
+			// 	}
 
 
+			// 	} else {
+			// 		rm = raiz_;
+			// 			if (rm->der == NULL){
+			// 				raiz_ = rm->izq;
+			// 				rm->izq = NULL;
+;
+			// 				delete rm;
+
+			// 			} else if (rm ->izq == NULL){
+			// 			raiz_ = rm->der;
+
+			// 			rm->der = NULL;
+			// 			delete rm;
+			// 	}		
+
+			// 	} 
+			// 	// 
+
+			// 	if (rm->der != NULL && rm->izq != NULL){
+			// 			Nodo* padre_sucesor;
+			// 			Nodo* sucesor;
+			// 				if (rm->der->izq != NULL) {
+			// 				padre_sucesor = rm->der;
+			// 					while (padre_sucesor->izq->izq != NULL)
+			// 					padre_sucesor = padre_sucesor->izq;
+			// 				sucesor = padre_sucesor->izq;
+			// 				padre_sucesor->izq = sucesor->der;
+			// 				} else {
+			// 				padre_sucesor = rm;
+			// 				sucesor = padre_sucesor->der;
+			// 				rm->valor = sucesor->valor;
+			// 				padre_sucesor->der = sucesor->der;
+			// 			}
+			// 				sucesor->der = NULL;
+			// 				sucesor->izq = NULL;
+
+			// 				delete sucesor;
+			// 			}
+			// 			cardinal_--;
+			// 		}
+if (pertenece(clave)){
+	Nodo* rm = raiz_;
+	Nodo* padre = raiz_;
+	while (rm->valor != clave){
+		if (rm->valor < clave ){
+			rm = rm->der;
+			if (rm->valor != clave) padre=padre->der;
+		} else {
+			rm = rm->izq;
+			if(rm->valor !=clave) padre = padre->izq;
 		}
+	}
+	//encontre el nodo a borrar, evaluo casos:
+	//un hijo A LO SUMO:
+	 if (rm->der == NULL){
+	 
+		if (raiz_->valor != clave){
+			if (padre->valor < clave){
+			padre->der = padre->der->izq;
+			} else { 
+			padre->izq = padre->izq->izq;
+			}
+		} else { 
+		raiz_ = raiz_->izq;
+	}
+	rm->izq = NULL;
+
+	delete rm;
+	
+	}
+	else if (rm->izq == NULL){
+	
+			if (raiz_->valor != clave){
+				if (padre->valor < clave)
+					padre->der = padre->der->der;
+				else
+					padre->izq = padre->izq->der;
+				
+			} else {
+				raiz_ = raiz_->der;
+			}
+			rm->der = NULL;
+
+			delete rm;
+	} else {
+	// caso dos hijos (rm tiene izq y der) :
+	// busco el sucesor inmediato
+		Nodo* sucesor = rm-> der;
+		Nodo* padreDeSucesor;
+		if (rm->der->izq == NULL)
+			padreDeSucesor = rm;
+		else 
+			padreDeSucesor = rm->der;
+				
+		while (sucesor->izq != NULL){
+		sucesor = sucesor->izq;
+		if (sucesor->izq != NULL) padreDeSucesor = padreDeSucesor->izq;
+		}
+		// encontre el sucesor. pego el padre del sucesor con el hijo del sucesor (puede ser null)
+		if (padreDeSucesor != rm){
+			padreDeSucesor->izq = padreDeSucesor->izq->der;
+		} else {
+			padreDeSucesor->der = padreDeSucesor->der->der;
+		}
+		// cambio los valores y borro el sucesor
+		
+		rm->valor = sucesor->valor;
+		sucesor->der = NULL;
+		sucesor->izq = NULL;
+
+		delete sucesor;	
+	}
+	cardinal_--;
+	}
+
+
+
+}
 
 template <class Elem>
 const Elem&  Conjunto<Elem>::minimo() const {
@@ -237,11 +340,13 @@ const Elem&  Conjunto<Elem>::maximo() const {
 
 template <class Elem>
 void Conjunto<Elem>::to_string(std::ostream& os) const {
-	Nodo* indice = raiz_;
-	while (indice != NULL) {
-		os << maximo();
-		remover(maximo());
+	//Nodo* indice = raiz_;
+	//while (indice != NULL) {
+		//os << maximo();
+//		remover(maximo());
 	}
-}
+
+
+
 
 #endif // CONJUNTO_HPP_
